@@ -6,7 +6,7 @@ services:
     ports:
       - "8200:8200"
     volumes:
-      - "./config.hcl:/vault/config/config.hcl"
+      - "./config/standalone.hcl:/vault/config/config.hcl"
       - "./certs/certs/vault.com.crt:/cert/fullchain.pem"
       - "./certs/private/vault.com.key:/cert/privkey.pem"
       - "./certs/certs/ca-chain.crt:/cert/client_ca.pem"

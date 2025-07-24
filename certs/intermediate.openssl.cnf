@@ -107,7 +107,12 @@ subjectAltName         = @alt_names
 
 [alt_names]
 DNS.1                  = localhost
-DNS.2                  = vault.test
+DNS.2                  = vault-1
+DNS.2                  = vault-2
+DNS.2                  = vault-3
+IP.1                   = 178.27.1.5
+IP.2                   = 178.27.1.6
+IP.3                   = 178.27.1.7
 
 [ crl_ext ]
 # Extension for CRLs (`man x509v3_config`).

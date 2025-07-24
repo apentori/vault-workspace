@@ -1,0 +1,65 @@
+---
+services:
+  vault-1:
+    container_name: "vault-1"
+    image: "hashicorp/vault:1.20"
+    ports:
+      - "8200:8200"
+    volumes:
+      - "./config/cluster-1.hcl:/vault/config/config.hcl"
+      - "./certs/certs/server_tls.crt:/cert/fullchain.pem"
+      - "./certs/private/server_tls.key:/cert/privkey.pem"
+      - "./certs/ca-chain.crt:/cert/client_ca.pem"
+      - "./certs/private/cluster_client.key:/cert/client_cluster.key"
+      - "./certs/certs/cluster_client.crt:/cert/client_cluster.crt"
+    cap_add:
+      - IPC_LOCK
+    entrypoint: vault server -config=/vault/config/config.hcl
+    networks:
+      vault_network:
+        ipv4_address: 178.27.1.5
+
+  vault-2:
+    container_name: "vault-2"
+    image: "hashicorp/vault:1.20"
+    ports:
+      - "8300:8200"
+    volumes:
+      - "./config/cluster-2.hcl:/vault/config/config.hcl"
+      - "./certs/certs/server_tls.crt:/cert/fullchain.pem"
+      - "./certs/private/server_tls.key:/cert/privkey.pem"
+      - "./certs/ca-chain.crt:/cert/client_ca.pem"
+      - "./certs/private/cluster_client.key:/cert/client_cluster.key"
+      - "./certs/certs/cluster_client.crt:/cert/client_cluster.crt"
+    cap_add:
+      - IPC_LOCK
+    entrypoint: vault server -config=/vault/config/config.hcl
+    networks:
+      vault_network:
+        ipv4_address: 178.27.1.6
+
+  vault-3:
+    container_name: "vault-3"
+    image: "hashicorp/vault:1.20"
+    ports:
+      - "8400:8200"
+    volumes:
+      - "./config/cluster-3.hcl:/vault/config/config.hcl"
+      - "./certs/certs/server_tls.crt:/cert/fullchain.pem"
+      - "./certs/private/server_tls.key:/cert/privkey.pem"
+      - "./certs/ca-chain.crt:/cert/client_ca.pem"
+      - "./certs/private/cluster_client.key:/cert/client_cluster.key"
+      - "./certs/certs/cluster_client.crt:/cert/client_cluster.crt"
+    cap_add:
+      - IPC_LOCK
+    entrypoint: vault server -config=/vault/config/config.hcl
+    networks:
+      vault_network:
+        ipv4_address: 178.27.1.7
+
+networks:
+  vault_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 178.27.0.0/16

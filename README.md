@@ -2,12 +2,27 @@
 
 ## Description
 
-This repository is made to test Vault in different setup
+This repository is made to test Vault in different setups with mTLS enable
+* Single Instance
+* Cluster Mode
 
 
-## Tests
 
-#### Certificates generations
+## Single Instance
+```
++-----------+
+|  Root CA  |
+++----------+
+ |
+ |    +-------------+
+ +--->|  Client CA  |
+      +-----------+-+  +----------------+
+                  +--->|  User Certs    |
+                  |    +----------------+
+                  |    +----------------+
+                  +--->|  TLS Certs     |
+                       +----------------+
+```
 
 Generate the certificate following the process [Certificate Generation and mTls](./docs/certificates-generation.md)
 
@@ -23,3 +38,28 @@ vault secrets enable -path secret kv-v2
 vault kv put -mount=secret secrets/test aaa=bbb
 vault kv get -mount=secret secrets/test
 ```
+
+
+#### Cluster mode
+
+```
++-----------+
+|  Root CA  |
+++----------+
+ |
+ |    +-------------+
+ +--->|  Client CA  |
+      +-----------+-+  +----------------+
+                  +--->|  User Certs    |
+                  |    +----------------+
+                  |    +----------------+
+                  +--->|  Cluster Certs |
+                  |    +----------------+
+                  |    +----------------+
+                  +--->|  TLS Certs     |
+                       +----------------+
+```
+
+* Generate new certificate for the Cluster mode
+* Run multiple Vault instance in Raft Cluster mode
+

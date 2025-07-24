@@ -1,0 +1,15 @@
+---
+services:
+  vault-server:
+    container_name: "vault"
+    image: "hashicorp/vault:1.20"
+    ports:
+      - "8200:8200"
+    volumes:
+      - "./config.hcl:/vault/config/config.hcl"
+      - "./certs/certs/vault.com.crt:/cert/fullchain.pem"
+      - "./certs/private/vault.com.key:/cert/privkey.pem"
+      - "./certs/certs/ca-chain.crt:/cert/client_ca.pem"
+    cap_add:
+      - IPC_LOCK
+    entrypoint: vault server -config=/vault/config/config.hcl

@@ -7,9 +7,10 @@ services:
       - "8200:8200"
     volumes:
       - "./config/standalone.hcl:/vault/config/config.hcl"
-      - "./certs/certs/server_tls.crt:/cert/fullchain.pem"
-      - "./certs/private/server_tls.key:/cert/privkey.pem"
-      - "./certs/certs/ca-chain.crt:/cert/client_ca.pem"
+      - "./backup:/backup"
+#      - "./certs/certs/server_tls.crt:/cert/fullchain.pem"
+#      - "./certs/private/server_tls.key:/cert/privkey.pem"
+#      - "./certs/certs/ca-chain.crt:/cert/client_ca.pem"
     cap_add:
       - IPC_LOCK
     entrypoint: vault server -config=/vault/config/config.hcl

@@ -1,0 +1,94 @@
+---
+services:
+  vault-1:
+    container_name: "vault-1"
+    image: "hashicorp/vault:2.1"
+    ports:
+      - "8200:8200"
+    volumes:
+      - "./config/cluster-1.hcl:/vault/config/config.hcl"
+      - storage_1:/tmp
+    cap_add:
+      - IPC_LOCK
+    entrypoint: vault server -config=/vault/config/config.hcl
+    networks:
+      vault_network:
+        ipv4_address: 178.27.1.5
+
+  vault-2:
+    container_name: "vault-2"
+    image: "hashicorp/vault:2.1"
+    ports:
+      - "8300:8200"
+    volumes:
+      - "./config/cluster-2.hcl:/vault/config/config.hcl"
+      - storage_2:/tmp
+    cap_add:
+      - IPC_LOCK
+    entrypoint: vault server -config=/vault/config/config.hcl
+    networks:
+      vault_network:
+        ipv4_address: 178.27.1.6
+
+  vault-3:
+    container_name: "vault-3"
+    image: "hashicorp/vault:2.1"
+    ports:
+      - "8400:8200"
+    volumes:
+      - "./config/cluster-3.hcl:/vault/config/config.hcl"
+      - storage_3:/tmp
+    cap_add:
+      - IPC_LOCK
+    entrypoint: vault server -config=/vault/config/config.hcl
+    networks:
+      vault_network:
+        ipv4_address: 178.27.1.7
+
+  prometheus:
+    container_name: "prometheus"
+    image: "prom/prometheus:latest"
+    ports:
+      - "9090:9090"
+    volumes:
+      - "./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro"
+      - prometheus_data:/prometheus
+    networks:
+      - vault_network
+
+  grafana:
+    container_name: "grafana"
+    image: "grafana/grafana:latest"
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - "./grafana/provisioning:/etc/grafana/provisioning:ro"
+      - "./grafana/dashboards:/etc/grafana/dashboards:ro"
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - vault_network
+
+volumes:
+  storage_1:
+    name: vault-node-1
+  storage_2:
+    name: vault-node-2
+  storage_3:
+    name: vault-node-3
+  prometheus_data:
+    name: vault-prometheus-data
+  grafana_data:
+    name: vault-grafana-data
+
+networks:
+  vault_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 178.27.0.0/16
